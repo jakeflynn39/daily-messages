@@ -1,6 +1,6 @@
 # Twitter Bot with GPT-3 Integration
 
-This is a Twitter bot script that leverages OpenAI's GPT-3 model to generate tweets. The bot selects a random friend from a list and creates a tweet in a specified style. The bot also retrieves a predefined system message.
+I made this to spread love and joy to my friends on my behalf, but without having to remember to do it every day. I also wanted to experiment with GPT-3 and see how well it could generate tweets. This is a Twitter bot script that leverages OpenAI's GPT-3 model to generate tweets. The bot selects a random friend from a list and creates a tweet in a specified style. The bot also retrieves a predefined system message.
 
 ## Prerequisites
 
