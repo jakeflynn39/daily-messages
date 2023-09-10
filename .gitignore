@@ -1,6 +1,6 @@
 .env
 *.txt
-!gptRoles.txt
+!gptRole.txt
 *.ipynb
 friends.json
 prev_tweets.json
