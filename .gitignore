@@ -1,0 +1,9 @@
+.env
+*.txt
+!gptRoles.txt
+*.ipynb
+friends.json
+prev_tweets.json
+package/
+venv/
+deployment-package.zip
