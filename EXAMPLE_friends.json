@@ -1,0 +1,17 @@
+{
+  "friends": [
+    {
+      "name": "John Doe",
+      "handle": "@JohnDoe",
+      "bio": [
+        "My dear friend who I have known since high school",
+        "A very funny guy who always make me laugh"
+      ]
+    },
+    {
+      "name": "Jane Doe",
+      "handle": "@JaneDoe",
+      "bio": ["My favorite childhood friend", "A very kind and caring person"]
+    }
+  ]
+}
