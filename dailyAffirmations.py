@@ -56,6 +56,7 @@ def handler(event, context):
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
         messages=messages,
+        temperature=1.69, # bumped up creativity
         )
 
     tweet = clean_up(response["choices"][0]["message"]["content"])
