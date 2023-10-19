@@ -50,16 +50,20 @@ def handler(event, context):
     bio = random.choice(chosen_friend['bio'])
     friend_info = f"\nName: {chosen_friend['name']}\nHandle: {chosen_friend['handle']}\nBio: {bio}"
 
+    print(friend_info)
+
     # # set gpt prompt
     messages.append({"role": "user", "content": tweet_directive + friend_info})
 
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
         messages=messages,
-        temperature=1.69, # bumped up creativity
+        temperature=1.09,
         )
 
     tweet = clean_up(response["choices"][0]["message"]["content"])
+
+    print(tweet)
 
     # twitter api
     client = tweepy.Client(consumer_key=CONSUMER_KEY,
