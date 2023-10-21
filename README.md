@@ -9,6 +9,7 @@ Before running the script, make sure you have the following set up:
 - Twitter Developer API keys for authentication
 - OpenAI API key
 - Python environment with required packages (tweepy, openai, dotenv)
+- AWS account set up
 
 ## Getting Started
 
