@@ -3,6 +3,7 @@ import tweepy
 import random
 import os
 import json
+from datetime import datetime
 from dotenv import load_dotenv
 
 
@@ -23,45 +24,52 @@ openai.api_key = os.environ.get('OPENAI_API_KEY')
 
 
 def handler(event, context):
-    with open('gptRole.txt', 'r') as file:
-        role = file.read()
-    with open('prev_tweets.json', 'r') as file:
-        prev_tweets = json.load(file)["prevTweets"]
+    today = datetime.today().strftime('%m-%d-%Y')
 
-    with open('friends.json', 'r') as file:
-        friends = json.load(file)["friends"]
+    if os.path.isfile(f'{today}.txt'):
+        with open(f'{today}.txt', 'r') as file:
+            tweet = file.read()
 
-    messages = [
-        {
-            "role": "system", 
-            "content": role
-        }, 
-    ]
+    else:
+        with open('gptRole.txt', 'r') as file:
+            role = file.read()
+        with open('prev_tweets.json', 'r') as file:
+            prev_tweets = json.load(file)["prevTweets"]
 
-    tweet_directive = f'''Here are some of my previous tweets that I want you to learn from in json format: \n{prev_tweets}\n
-    You can write between 2-3 sentences as long as you follow the same tone as my previous tweets and talk only about the friend I am providing here. 
-    Make sure to include my dry humor, sarcasm, irony, and occasional self deprication, as well as subtle mis-spells and blatent refusal to follow 
-    grammatical conventions, and mix up how you start the tweets so they do not all begin with 'Just' every time. \n** VERY IMPORTANT ** 
-    Remember, mis-spell a word or 2, but do it subtlely, and include my subtle digs and sarcasm.\n Here is the description of 
-    my friend I want you to tweet about: '''
+        with open('friends.json', 'r') as file:
+            friends = json.load(file)["friends"]
+
+        messages = [
+            {
+                "role": "system", 
+                "content": role
+            }, 
+        ]
+
+        tweet_directive = f'''Here are some of my previous tweets that I want you to learn from in json format: \n{prev_tweets}\n
+        You can write between 2-3 sentences as long as you follow the same tone as my previous tweets and talk only about the friend I am providing here. 
+        Make sure to include my dry humor, sarcasm, irony, and occasional self deprication, as well as subtle mis-spells and blatent refusal to follow 
+        grammatical conventions, and mix up how you start the tweets so they do not all begin with 'Just' every time. \n** VERY IMPORTANT ** 
+        Remember, mis-spell a word or 2, but do it subtlely, and include my subtle digs and sarcasm.\n Here is the description of 
+        my friend I want you to tweet about: '''
 
 
-    chosen_friend = random.choice(friends)
-    bio = random.choice(chosen_friend['bio'])
-    friend_info = f"\nName: {chosen_friend['name']}\nHandle: {chosen_friend['handle']}\nBio: {bio}"
+        chosen_friend = random.choice(friends)
+        bio = random.choice(chosen_friend['bio'])
+        friend_info = f"\nName: {chosen_friend['name']}\nHandle: {chosen_friend['handle']}\nBio: {bio}"
 
-    print(friend_info)
+        print(friend_info)
 
-    # # set gpt prompt
-    messages.append({"role": "user", "content": tweet_directive + friend_info})
+        # set gpt prompt
+        messages.append({"role": "user", "content": tweet_directive + friend_info})
 
-    response = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo",
-        messages=messages,
-        temperature=1.09,
-        )
+        response = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo",
+            messages=messages,
+            temperature=1.09,
+            )
 
-    tweet = clean_up(response["choices"][0]["message"]["content"])
+        tweet = clean_up(response["choices"][0]["message"]["content"])
 
     print(tweet)
 
