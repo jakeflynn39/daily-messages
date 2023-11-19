@@ -26,7 +26,7 @@ openai.api_key = os.environ.get('OPENAI_API_KEY')
 def handler(event, context):
     today = datetime.today().strftime('%m-%d-%Y')
 
-    if os.path.isfile(f'{today}.txt'):
+    if os.path.isfile(f'dates/{today}.txt'):
         with open(f'{today}.txt', 'r') as file:
             tweet = file.read()
 

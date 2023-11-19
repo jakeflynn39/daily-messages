@@ -8,3 +8,4 @@ package/
 venv/
 deployment-package.zip
 *.csv
+dates/
