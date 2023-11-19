@@ -59,10 +59,11 @@ openai.api_key = os.getenv('OPENAI_API_KEY')
 
 To deploy this script as an AWS Lambda function, ensure you set your environment variables directly in the code, and package the script along with the necessary dependencies into a deployment package.
 
-To create the deployment package, run the `process.sh` script to prepare the zip file and upload it to AWS Lambda. Make sure you have the AWS CLI installed and configured with your credentials.
+To create the deployment package, give executable privileges to the `process.sh` script and run it to prepare the zip file and upload it to AWS Lambda. Make sure you have the AWS CLI installed and configured with your credentials.
 
 ```bash
-./process.sh
+    chmod +x ./process.sh
+    ./process.sh
 ```
 
 ## Execution
