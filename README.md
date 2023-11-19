@@ -56,17 +56,10 @@ openai.api_key = os.getenv('OPENAI_API_KEY')
 
 To deploy this script as an AWS Lambda function, ensure you set your environment variables directly in the code, and package the script along with the necessary dependencies into a deployment package.
 
-To create the deployment package, run the following commands:
+To create the deployment package, run the `process.sh` script to prepare the zip file to be uploaded:
 
 ```bash
-source venv/bin/activate
-pip install tweepy openai python-dotenv
-pip3 freeze > requirements.txt
-pip3 install --target ./package -r requirements.txt
-cd package
-zip -r ../deployment-package.zip .
-cd ..
-zip -g deployment-package.zip dailyAffirmations.py friends.json prev_tweets.json gptRole.txt
+./process.sh
 ```
 
 Then, upload the `deployment-package.zip` file to AWS Lambda. Make sure to set the handler to `dailyAffirmations.lambda_handler` and set up the enviorment variables. Then set up Lambda triggers to run the script whenever you want.
