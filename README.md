@@ -9,7 +9,7 @@ Before running the script, make sure you have the following set up:
 - Twitter Developer API keys for authentication
 - OpenAI API key
 - Python environment with required packages (tweepy, openai, dotenv)
-- AWS account set up
+- AWS account set up with Lambda function and S3 bucket
 
 ## Getting Started
 
@@ -29,6 +29,8 @@ Before running the script, make sure you have the following set up:
    ACCESS_TOKEN_KEY=your_twitter_access_token_key
    ACCESS_TOKEN_SECRET=your_twitter_access_token_secret
    OPENAI_API_KEY=your_openai_api_key
+   FUNCTION_NAME=your_aws_function_name
+   S3_BUCKET_NAME=your_aws_s3_bucket_name
    ```
 
 4. Adjust the code to specify your environment variables. You can choose to load environment variables from `.env` for local testing or directly set them in the code for AWS Lambda deployment.
@@ -57,13 +59,11 @@ openai.api_key = os.getenv('OPENAI_API_KEY')
 
 To deploy this script as an AWS Lambda function, ensure you set your environment variables directly in the code, and package the script along with the necessary dependencies into a deployment package.
 
-To create the deployment package, run the `process.sh` script to prepare the zip file to be uploaded:
+To create the deployment package, run the `process.sh` script to prepare the zip file and upload it to AWS Lambda. Make sure you have the AWS CLI installed and configured with your credentials.
 
 ```bash
 ./process.sh
 ```
-
-Then, upload the `deployment-package.zip` file to AWS Lambda. Make sure to set the handler to `dailyAffirmations.lambda_handler` and set up the enviorment variables. Then set up Lambda triggers to run the script whenever you want.
 
 ## Execution
 

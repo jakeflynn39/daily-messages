@@ -7,3 +7,4 @@ prev_tweets.json
 package/
 venv/
 deployment-package.zip
+*.csv
