@@ -24,7 +24,7 @@ openai.api_key = os.environ.get('OPENAI_API_KEY')
 
 
 def handler(event, context):
-    today = datetime.today().strftime('%m-%d-%Y')
+    today = datetime.today().strftime('%Y-%m-%d')
 
     if os.path.isfile(f'dates/{today}.txt'):
         with open(f'dates/{today}.txt', 'r') as file:
@@ -47,11 +47,11 @@ def handler(event, context):
         ]
 
         tweet_directive = f'''Here are some of my previous tweets that I want you to learn from in json format: \n{prev_tweets}\n
-        You can write between 2-3 sentences as long as you follow the same tone as my previous tweets and talk only about the friend I am providing here. 
-        Make sure to include my dry humor, sarcasm, irony, and occasional self deprication, as well as subtle mis-spells and blatent refusal to follow 
-        grammatical conventions, and mix up how you start the tweets so they do not all begin with 'Just' every time. \n** VERY IMPORTANT ** 
-        Remember, mis-spell a word or 2, but do it subtlely, and include my subtle digs and sarcasm.\n Here is the description of 
-        my friend I want you to tweet about: '''
+            You can write between 2-3 sentences as long as you follow the same tone as my previous tweets and talk only about the friend I am providing here. 
+            Make sure to include my dry humor, sarcasm, irony, and occasional self deprication, as well as subtle mis-spells and blatent refusal to follow 
+            grammatical conventions, and mix up how you start the tweets so they do not all begin with 'Just' every time. \n** VERY IMPORTANT ** 
+            Remember, mis-spell a word or 2, but do it subtlely, and include my subtle digs and sarcasm.\n Here is the description of 
+            my friend I want you to tweet about: '''
 
 
         chosen_friend = random.choice(friends)
