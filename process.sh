@@ -8,7 +8,7 @@ pip install tweepy openai python-dotenv
 printf "Dependencies installed\n"
 
 pip3 freeze > requirements.txt
-pip3 install --target ./package -r requirements.txt
+pip3 install --upgrade --target ./package -r requirements.txt
 printf "Dependencies packaged\n"
 
 cd package
