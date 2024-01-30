@@ -54,8 +54,19 @@ def handler(event, context):
             my friend I want you to tweet about: '''
 
 
-        chosen_friend = random.choice(friends)
-        bio = random.choice(chosen_friend['bio'])
+        # choose friend but allow me to x out bios that I don't want to use
+        while True:
+            chosen_friend = random.choice(friends)
+
+            if not all(bio.startswith('x') for bio in chosen_friend['bio']):
+                break
+
+        while True:
+            bio = random.choice(chosen_friend['bio'])
+
+            if not bio.startswith('x'):
+                break
+
         friend_info = f"\nName: {chosen_friend['name']}\nHandle: {chosen_friend['handle']}\nBio: {bio}"
 
         print(friend_info)
