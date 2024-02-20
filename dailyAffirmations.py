@@ -78,7 +78,7 @@ def handler(event, context):
             model="gpt-3.5-turbo",
             messages=messages,
             temperature=1.09,
-            )
+        )
 
         tweet = clean_up(response["choices"][0]["message"]["content"])
 
@@ -95,9 +95,9 @@ def handler(event, context):
 
 def clean_up(tweet):
     tweet = tweet.replace('Tweet: ', '')
-    if tweet[0] == '"':
+    if tweet[0] == '“':
         tweet = tweet[1:]
-    if tweet[-1] == '"':
+    if tweet[-1] == '”':
         tweet = tweet[:-1]
     if tweet[0] == '@':
         tweet = '.' + tweet
