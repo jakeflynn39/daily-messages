@@ -95,9 +95,9 @@ def handler(event, context):
 
 def clean_up(tweet):
     tweet = tweet.replace('Tweet: ', '')
-    if tweet[0] == '“':
+    if tweet[0] == '“' or tweet[0] == '"':
         tweet = tweet[1:]
-    if tweet[-1] == '”':
+    if tweet[-1] == '”' or tweet[-1] == '"':
         tweet = tweet[:-1]
     if tweet[0] == '@':
         tweet = '.' + tweet
