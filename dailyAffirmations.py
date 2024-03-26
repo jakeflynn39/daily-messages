@@ -75,7 +75,7 @@ def handler(event, context):
         messages.append({"role": "user", "content": tweet_directive + friend_info})
 
         response = openai.ChatCompletion.create(
-            model="gpt-3.5-turbo",
+            model="gpt-4-turbo-preview",
             messages=messages,
             temperature=1.09,
         )
