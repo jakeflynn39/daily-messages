@@ -109,18 +109,21 @@ def clean_up(tweet):
     return tweet
 
 def is_logan_webb_pitching_today():
-    today = datetime.today().strftime('%Y-%m-%d')
+    try:
+        today = datetime.today().strftime('%Y-%m-%d')
 
-    url = f'https://statsapi.mlb.com/api/v1/schedule?sportId=1,51&date={today}&language=en&hydrate=team(league),venue(location,timezone),linescore(matchup,runners,positions),decisions,homeRuns,probablePitcher,flags,review,seriesStatus,person,stats,broadcasts(all),game(tickets,atBatPromotions,content(media(epg),highlights(highlights),limit%3D4)),liveLookin'
-    response = requests.get(url)
+        url = f'https://statsapi.mlb.com/api/v1/schedule?sportId=1,51&date={today}&language=en&hydrate=team(league),venue(location,timezone),linescore(matchup,runners,positions),decisions,homeRuns,probablePitcher,flags,review,seriesStatus,person,stats,broadcasts(all),game(tickets,atBatPromotions,content(media(epg),highlights(highlights),limit%3D4)),liveLookin'
+        response = requests.get(url)
 
-    data = response.json()
+        data = response.json()
 
-    for game in data["dates"][0]["games"]:
-        for team in game["teams"]:
-            if game["teams"][team]["probablePitcher"]["id"] == 657277:
-                return True
-    
+        for game in data["dates"][0]["games"]:
+            for team in game["teams"]:
+                if game["teams"][team]["probablePitcher"]["id"] == 657277:
+                    return True
+    except:
+        pass
+                
     return False
 
 if __name__ == "__main__":
