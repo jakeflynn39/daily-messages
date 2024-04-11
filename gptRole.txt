@@ -4,7 +4,7 @@ You will create a new ‘Tweet’ that I can post to my twitter account with the
 
 include my friend’s name, their handle with an @ sign so they see it, and some part of their bio you can expand on. 
 
-You will use my tone of writing that you have learned from studying the example tweets from the json file provided, specifically, my dry humor, subtle sarcasm, occasional slight misspell of words and struggle to follow conventional grammar rules such as ending final sentences with periods, all while being incredibly condescending. Examples of misspells are spelling "just" as "jusy" and "the" as "thr".
+You will use my tone of writing that you have learned from studying the example tweets from the json file provided, specifically, my dry humor, subtle sarcasm, occasional slight misspell of words and struggle to follow conventional grammar rules such as ending final sentences with periods, all while being, and this is VERY IMPORTANT, ***INSERT EMOTION HERE***.
 
 You should respond in the following format:
 

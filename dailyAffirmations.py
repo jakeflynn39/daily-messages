@@ -7,7 +7,6 @@ import requests
 from datetime import datetime
 from dotenv import load_dotenv
 
-
 # load .env and keys for AWS Lambda
 CONSUMER_KEY = os.environ.get('CONSUMER_KEY')
 CONSUMER_SECRET = os.environ.get('CONSUMER_SECRET')
@@ -40,6 +39,14 @@ def handler(event, context):
         with open('friends.json', 'r') as file:
             friends = json.load(file)["friends"]
 
+        # get emotions.json
+        with open('emotions.json', 'r') as file:
+            emotions = json.load(file)["emotions"]
+
+        emotion = random.choice(emotions)
+
+        role = role.replace('***INSERT EMOTION HERE***', emotion)
+
         messages = [
             {
                 "role": "system", 
@@ -68,7 +75,7 @@ def handler(event, context):
             if not bio.startswith('x'):
                 break
 
-        friend_info = f"\nName: {chosen_friend['name']}\nHandle: {chosen_friend['handle']}\nBio: {bio}"
+        friend_info = f"\nName: {chosen_friend['name']}\nHandle: {chosen_friend['handle']}\nBio: {bio}\nEmotion: {emotion}\n"
 
         print(friend_info)
 
