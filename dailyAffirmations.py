@@ -8,23 +8,25 @@ from datetime import datetime
 from dotenv import load_dotenv
 
 # load .env and keys for AWS Lambda
-CONSUMER_KEY = os.environ.get('CONSUMER_KEY')
-CONSUMER_SECRET = os.environ.get('CONSUMER_SECRET')
-ACCESS_TOKEN_KEY = os.environ.get('ACCESS_TOKEN_KEY')
-ACCESS_TOKEN_SECRET = os.environ.get('ACCESS_TOKEN_SECRET')
-openai.api_key = os.environ.get('OPENAI_API_KEY')
+# CONSUMER_KEY = os.environ.get('CONSUMER_KEY')
+# CONSUMER_SECRET = os.environ.get('CONSUMER_SECRET')
+# ACCESS_TOKEN_KEY = os.environ.get('ACCESS_TOKEN_KEY')
+# ACCESS_TOKEN_SECRET = os.environ.get('ACCESS_TOKEN_SECRET')
+# openai.api_key = os.environ.get('OPENAI_API_KEY')
 
 # load .env and keys for local testing
-# load_dotenv()
-# CONSUMER_KEY = os.getenv('CONSUMER_KEY')
-# CONSUMER_SECRET = os.getenv('CONSUMER_SECRET')
-# ACCESS_TOKEN_KEY = os.getenv('ACCESS_TOKEN_KEY')
-# ACCESS_TOKEN_SECRET = os.getenv('ACCESS_TOKEN_SECRET')
-# openai.api_key = os.getenv('OPENAI_API_KEY')
+load_dotenv()
+CONSUMER_KEY = os.getenv('CONSUMER_KEY')
+CONSUMER_SECRET = os.getenv('CONSUMER_SECRET')
+ACCESS_TOKEN_KEY = os.getenv('ACCESS_TOKEN_KEY')
+ACCESS_TOKEN_SECRET = os.getenv('ACCESS_TOKEN_SECRET')
+openai.api_key = os.getenv('OPENAI_API_KEY')
 
 
 def handler(event, context):
     today = datetime.today().strftime('%Y-%m-%d')
+
+    media_ids = None
 
     if os.path.isfile(f'dates/{today}.txt'):
         with open(f'dates/{today}.txt', 'r') as file:
@@ -97,9 +99,20 @@ def handler(event, context):
                         consumer_secret=CONSUMER_SECRET,
                         access_token=ACCESS_TOKEN_KEY,
                         access_token_secret=ACCESS_TOKEN_SECRET)
+    
+    if os.path.isfile(f'dates/images/{today}.jpeg'):
+        with open(f'dates/images/{today}.jpeg', 'r') as file:
+            print('found image')
+
+        auth = tweepy.OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
+        auth.set_access_token(ACCESS_TOKEN_KEY, ACCESS_TOKEN_SECRET)
+        api = tweepy.API(auth)
+
+        media = api.media_upload(f'dates/images/{today}.jpeg')
+        media_ids = [media.media_id]
 
     # post tweet
-    response = client.create_tweet(text=tweet)
+    response = client.create_tweet(text=tweet, media_ids=media_ids)
 
 def clean_up(tweet):
     tweet = tweet.replace('Tweet: ', '')
