@@ -78,7 +78,7 @@ def handler(event, context):
             if not bio.startswith('x'):
                 break
 
-        friend_info = f"\nName: {chosen_friend['name']}\nHandle: {chosen_friend['handle']}\nBio: {bio}\nEmotion: {emotion}\n"
+        friend_info = f"\nName: {chosen_friend['name']}\nHandle: {chosen_friend['handle']}\nBio: {bio}\n"
 
         image_location = chosen_friend.get('image_url', None)
 
