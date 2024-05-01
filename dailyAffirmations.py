@@ -6,28 +6,32 @@ import json
 import requests
 from datetime import datetime
 from dotenv import load_dotenv
+import urllib.request
 
 # load .env and keys for AWS Lambda
-CONSUMER_KEY = os.environ.get('CONSUMER_KEY')
-CONSUMER_SECRET = os.environ.get('CONSUMER_SECRET')
-ACCESS_TOKEN_KEY = os.environ.get('ACCESS_TOKEN_KEY')
-ACCESS_TOKEN_SECRET = os.environ.get('ACCESS_TOKEN_SECRET')
-openai.api_key = os.environ.get('OPENAI_API_KEY')
+# CONSUMER_KEY = os.environ.get('CONSUMER_KEY')
+# CONSUMER_SECRET = os.environ.get('CONSUMER_SECRET')
+# ACCESS_TOKEN_KEY = os.environ.get('ACCESS_TOKEN_KEY')
+# ACCESS_TOKEN_SECRET = os.environ.get('ACCESS_TOKEN_SECRET')
+# openai.api_key = os.environ.get('OPENAI_API_KEY')
 
 # load .env and keys for local testing
-# load_dotenv()
-# CONSUMER_KEY = os.getenv('CONSUMER_KEY')
-# CONSUMER_SECRET = os.getenv('CONSUMER_SECRET')
-# ACCESS_TOKEN_KEY = os.getenv('ACCESS_TOKEN_KEY')
-# ACCESS_TOKEN_SECRET = os.getenv('ACCESS_TOKEN_SECRET')
-# openai.api_key = os.getenv('OPENAI_API_KEY')
+load_dotenv()
+CONSUMER_KEY = os.getenv('CONSUMER_KEY')
+CONSUMER_SECRET = os.getenv('CONSUMER_SECRET')
+ACCESS_TOKEN_KEY = os.getenv('ACCESS_TOKEN_KEY')
+ACCESS_TOKEN_SECRET = os.getenv('ACCESS_TOKEN_SECRET')
+openai.api_key = os.getenv('OPENAI_API_KEY')
 
 
 def handler(event, context):
     today = datetime.today().strftime('%Y-%m-%d')
 
-    image_location = None
+    image_location_local = None
     media_ids = None
+    tweet = None
+    create_image = False
+    image_url = None
 
     if os.path.isfile(f'dates/{today}.txt'):
         with open(f'dates/{today}.txt', 'r') as file:
@@ -80,7 +84,7 @@ def handler(event, context):
 
         friend_info = f"\nName: {chosen_friend['name']}\nHandle: {chosen_friend['handle']}\nBio: {bio}\n"
 
-        image_location = chosen_friend.get('image_url', None)
+        image_location_local = chosen_friend.get('image_url', None)
 
         print(friend_info)
 
@@ -103,15 +107,30 @@ def handler(event, context):
                         access_token=ACCESS_TOKEN_KEY,
                         access_token_secret=ACCESS_TOKEN_SECRET)
     
-    if not image_location and os.path.isfile(f'dates/images/{today}.jpeg'):
-        image_location = f'dates/images/{today}.jpeg'
+    auth = tweepy.OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
+    auth.set_access_token(ACCESS_TOKEN_KEY, ACCESS_TOKEN_SECRET)
+    api = tweepy.API(auth)
+    
+    if not image_location_local and os.path.isfile(f'dates/images/{today}.jpeg'):
+        image_location_local = f'dates/images/{today}.jpeg'
 
-    if image_location:
-        auth = tweepy.OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
-        auth.set_access_token(ACCESS_TOKEN_KEY, ACCESS_TOKEN_SECRET)
-        api = tweepy.API(auth)
+    if create_image:
+        response = openai.Image.create(
+            model="dall-e-3",
+            prompt=friend_info,
+            size="1024x1024",
+            quality="standard",
+            n=1,
+        )
+    
+        image_url = response.data[0].url
 
-        media = api.media_upload(image_location)
+    if image_location_local:
+        media = api.media_upload(image_location_local)
+        media_ids = [media.media_id]
+
+    if image_url:
+        media = api.media_upload(urllib.request.urlretrieve(image_url)[0])
         media_ids = [media.media_id]
 
     # post tweet
