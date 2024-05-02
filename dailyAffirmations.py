@@ -30,7 +30,7 @@ def handler(event, context):
     image_location_local = None
     media_ids = None
     tweet = None
-    create_image = False
+    create_image_prompt = None
     image_url = None
 
     if os.path.isfile(f'dates/{today}.txt'):
@@ -73,31 +73,34 @@ def handler(event, context):
         while True:
             chosen_friend = random.choice(friends)
 
-            if not all(bio.startswith('x') for bio in chosen_friend['bio']):
+            attributes = [bio["bio"] for bio in chosen_friend["attributes"]]
+
+            if not all(bio.startswith('x') for bio in attributes):
                 break
 
         while True:
-            bio = random.choice(chosen_friend['bio'])
+            bio = random.choice(chosen_friend['attributes'])
 
-            if not bio.startswith('x'):
+            if not bio["bio"].startswith('x'):
                 break
 
-        friend_info = f"\nName: {chosen_friend['name']}\nHandle: {chosen_friend['handle']}\nBio: {bio}\n"
+        friend_info = f"\nName: {chosen_friend['name']}\nHandle: {chosen_friend['handle']}\nBio: {bio['bio']}\n"
 
-        image_location_local = chosen_friend.get('image_url', None)
+        image_location_local = bio.get('image_url', None)
+        create_image_prompt = bio.get('create_image_prompt', None)
 
         print(friend_info)
 
         # set gpt prompt
         messages.append({"role": "user", "content": tweet_directive + friend_info})
 
-        response = openai.ChatCompletion.create(
-            model="gpt-4-turbo-preview",
-            messages=messages,
-            temperature=1.09,
-        )
+        # response = openai.ChatCompletion.create(
+        #     model="gpt-4-turbo-preview",
+        #     messages=messages,
+        #     temperature=1.09,
+        # )
 
-        tweet = clean_up(response["choices"][0]["message"]["content"])
+        # tweet = clean_up(response["choices"][0]["message"]["content"])
 
     print(tweet)
 
@@ -114,27 +117,28 @@ def handler(event, context):
     if not image_location_local and os.path.isfile(f'dates/images/{today}.jpeg'):
         image_location_local = f'dates/images/{today}.jpeg'
 
-    if create_image:
+    if image_location_local:
+        media = api.media_upload(image_location_local)
+        media_ids = [media.media_id]
+    elif create_image_prompt:
+        print(f"Image Prompt: {create_image_prompt}")
+
         response = openai.Image.create(
             model="dall-e-3",
-            prompt=friend_info,
+            prompt=create_image_prompt,
             size="1024x1024",
             quality="standard",
             n=1,
         )
     
         image_url = response.data[0].url
+        print(f"Image URL: {image_url}")
 
-    if image_location_local:
-        media = api.media_upload(image_location_local)
-        media_ids = [media.media_id]
-
-    if image_url:
         media = api.media_upload(urllib.request.urlretrieve(image_url)[0])
         media_ids = [media.media_id]
 
     # post tweet
-    response = client.create_tweet(text=tweet, media_ids=media_ids)
+    # response = client.create_tweet(text=tweet, media_ids=media_ids)
 
 def clean_up(tweet):
     tweet = tweet.replace('Tweet: ', '')
