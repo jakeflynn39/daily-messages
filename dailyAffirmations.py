@@ -9,19 +9,19 @@ from dotenv import load_dotenv
 import urllib.request
 
 # load .env and keys for AWS Lambda
-# CONSUMER_KEY = os.environ.get('CONSUMER_KEY')
-# CONSUMER_SECRET = os.environ.get('CONSUMER_SECRET')
-# ACCESS_TOKEN_KEY = os.environ.get('ACCESS_TOKEN_KEY')
-# ACCESS_TOKEN_SECRET = os.environ.get('ACCESS_TOKEN_SECRET')
-# openai.api_key = os.environ.get('OPENAI_API_KEY')
+CONSUMER_KEY = os.environ.get('CONSUMER_KEY')
+CONSUMER_SECRET = os.environ.get('CONSUMER_SECRET')
+ACCESS_TOKEN_KEY = os.environ.get('ACCESS_TOKEN_KEY')
+ACCESS_TOKEN_SECRET = os.environ.get('ACCESS_TOKEN_SECRET')
+openai.api_key = os.environ.get('OPENAI_API_KEY')
 
 # load .env and keys for local testing
-load_dotenv()
-CONSUMER_KEY = os.getenv('CONSUMER_KEY')
-CONSUMER_SECRET = os.getenv('CONSUMER_SECRET')
-ACCESS_TOKEN_KEY = os.getenv('ACCESS_TOKEN_KEY')
-ACCESS_TOKEN_SECRET = os.getenv('ACCESS_TOKEN_SECRET')
-openai.api_key = os.getenv('OPENAI_API_KEY')
+# load_dotenv()
+# CONSUMER_KEY = os.getenv('CONSUMER_KEY')
+# CONSUMER_SECRET = os.getenv('CONSUMER_SECRET')
+# ACCESS_TOKEN_KEY = os.getenv('ACCESS_TOKEN_KEY')
+# ACCESS_TOKEN_SECRET = os.getenv('ACCESS_TOKEN_SECRET')
+# openai.api_key = os.getenv('OPENAI_API_KEY')
 
 
 def handler(event, context):
@@ -87,6 +87,9 @@ def handler(event, context):
         friend_info = f"\nName: {chosen_friend['name']}\nHandle: {chosen_friend['handle']}\nBio: {bio['bio']}\n"
 
         image_location_local = bio.get('image_url', None)
+        if image_location_local:
+            image_location_local = f'photos/{image_location_local}'
+
         create_image_prompt = bio.get('create_image_prompt', None)
 
         print(friend_info)
@@ -94,13 +97,13 @@ def handler(event, context):
         # set gpt prompt
         messages.append({"role": "user", "content": tweet_directive + friend_info})
 
-        # response = openai.ChatCompletion.create(
-        #     model="gpt-4-turbo-preview",
-        #     messages=messages,
-        #     temperature=1.09,
-        # )
+        response = openai.ChatCompletion.create(
+            model="gpt-4-turbo-preview",
+            messages=messages,
+            temperature=1.09,
+        )
 
-        # tweet = clean_up(response["choices"][0]["message"]["content"])
+        tweet = clean_up(response["choices"][0]["message"]["content"])
 
     print(tweet)
 
@@ -114,8 +117,8 @@ def handler(event, context):
     auth.set_access_token(ACCESS_TOKEN_KEY, ACCESS_TOKEN_SECRET)
     api = tweepy.API(auth)
     
-    if not image_location_local and os.path.isfile(f'dates/images/{today}.jpeg'):
-        image_location_local = f'dates/images/{today}.jpeg'
+    if not image_location_local and os.path.isfile(f'photos/{today}.jpeg'):
+        image_location_local = f'photos/{today}.jpeg'
 
     try:
         if image_location_local:
@@ -141,7 +144,7 @@ def handler(event, context):
         print(e)
 
     # post tweet
-    # response = client.create_tweet(text=tweet, media_ids=media_ids)
+    response = client.create_tweet(text=tweet, media_ids=media_ids)
 
 def clean_up(tweet):
     tweet = tweet.replace('Tweet: ', '')

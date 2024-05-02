@@ -16,7 +16,7 @@ zip -r ../deployment-package.zip .
 printf "Package zipped\n"
 
 cd ..
-zip -g deployment-package.zip dailyAffirmations.py friends.json emotions.json prev_tweets.json gptRole.txt dates/* dates/images/*
+zip -g deployment-package.zip dailyAffirmations.py friends.json emotions.json prev_tweets.json gptRole.txt dates/* photos/*
 printf "Files zipped\n"
 printf "Deployment package ready\n"
 
