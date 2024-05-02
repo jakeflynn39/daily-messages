@@ -117,25 +117,28 @@ def handler(event, context):
     if not image_location_local and os.path.isfile(f'dates/images/{today}.jpeg'):
         image_location_local = f'dates/images/{today}.jpeg'
 
-    if image_location_local:
-        media = api.media_upload(image_location_local)
-        media_ids = [media.media_id]
-    elif create_image_prompt:
-        print(f"Image Prompt: {create_image_prompt}")
+    try:
+        if image_location_local:
+            media = api.media_upload(image_location_local)
+            media_ids = [media.media_id]
+        elif create_image_prompt:
+            print(f"Image Prompt: {create_image_prompt}")
 
-        response = openai.Image.create(
-            model="dall-e-3",
-            prompt=create_image_prompt,
-            size="1024x1024",
-            quality="standard",
-            n=1,
-        )
-    
-        image_url = response.data[0].url
-        print(f"Image URL: {image_url}")
+            response = openai.Image.create(
+                model="dall-e-3",
+                prompt=create_image_prompt,
+                size="1024x1024",
+                quality="standard",
+                n=1,
+            )
+        
+            image_url = response.data[0].url
+            print(f"Image URL: {image_url}")
 
-        media = api.media_upload(urllib.request.urlretrieve(image_url)[0])
-        media_ids = [media.media_id]
+            media = api.media_upload(urllib.request.urlretrieve(image_url)[0])
+            media_ids = [media.media_id]
+    except Exception as e:
+        print(e)
 
     # post tweet
     # response = client.create_tweet(text=tweet, media_ids=media_ids)
