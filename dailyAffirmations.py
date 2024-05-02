@@ -136,7 +136,7 @@ def handler(event, context):
             )
         
             image_url = response.data[0].url
-            print(f"Image URL: {image_url}")
+            print(response)
 
             media = api.media_upload(urllib.request.urlretrieve(image_url)[0])
             media_ids = [media.media_id]
