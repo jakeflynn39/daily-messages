@@ -10,3 +10,4 @@ deployment-package.zip
 *.csv
 dates/
 photos/
+test_image.py
