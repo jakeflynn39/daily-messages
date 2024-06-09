@@ -155,12 +155,14 @@ def clean_up(tweet):
     if tweet[0] == '@':
         tweet = '.' + tweet
 
-    if len(tweet) < 270 and is_logan_webb_pitching_today():
-        tweet += ' #HappyLWD'
+    tweet_appendage = " #HappyPSD"
+
+    if len(tweet) < 280 - len(tweet_appendage) and is_paul_skenes_pitching_today():
+        tweet += tweet_appendage
 
     return tweet
 
-def is_logan_webb_pitching_today():
+def is_paul_skenes_pitching_today():
     try:
         today = datetime.today().strftime('%Y-%m-%d')
 
@@ -171,7 +173,7 @@ def is_logan_webb_pitching_today():
 
         for game in data["dates"][0]["games"]:
             for team in game["teams"]:
-                if game["teams"][team]["probablePitcher"]["id"] == 657277:
+                if game["teams"][team]["probablePitcher"]["id"] == 694973:
                     return True
     except:
         pass
